@@ -14,9 +14,7 @@ RUN apt-get install -y curl libicu-dev zlib1g-dev redis-server \
     && mv composer.phar /usr/local/bin/composer
 
 RUN usermod -u 1000 www-data
+
 RUN composer -n global require hirak/prestissimo
 
-COPY phpunit.sh /
 ADD 60-user.ini /usr/local/etc/php/conf.d/
-
-ENTRYPOINT ["/phpunit.sh"]

@@ -1,7 +1,7 @@
 FROM php:5.6-fpm
 
 RUN apt-get update \
-    && apt-get install -y apt-utils
+    && apt-get install -y apt-utils \
     && apt-get install -y git curl libicu-dev zlib1g-dev redis-server \
     && apt-get clean \
     && docker-php-ext-install intl \

@@ -1,4 +1,4 @@
-FROM php:5.6-fpm
+FROM php:7.0-fpm
 
 RUN apt-get update \
     && apt-get install -y apt-utils \
@@ -6,7 +6,7 @@ RUN apt-get update \
     && apt-get clean \
     && docker-php-ext-install intl \
     && pecl install redis \
-    && pecl install apcu-4.0.10 \
+    && pecl install apcu \
     && pecl install xdebug \
     && docker-php-ext-install mbstring \
     && docker-php-ext-install zip \

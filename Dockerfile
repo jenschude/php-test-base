@@ -4,6 +4,8 @@ ENV COMPOSER_ALLOW_SUPERUSER 1
 ENV COMPOSER_HOME /composer
 ENV COMPOSER_VERSION 1.3.2
 
+EXPOSE 8000
+
 RUN apk update && apk upgrade \
     && apk add gcc libxml2 libxslt libcurl libc-dev libxml2-dev libxslt-dev make curl icu-dev zlib-dev git redis autoconf\
     && docker-php-ext-install intl \

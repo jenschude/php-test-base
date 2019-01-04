@@ -1,8 +1,4 @@
-FROM php:7.1-fpm-alpine
-
-ENV COMPOSER_ALLOW_SUPERUSER 1
-ENV COMPOSER_HOME /composer
-ENV COMPOSER_VERSION 1.3.2
+FROM php:7.2-fpm-alpine
 
 EXPOSE 8000
 
@@ -17,20 +13,18 @@ RUN apk update && apk upgrade \
     && docker-php-ext-enable apcu \
     && docker-php-ext-enable redis \
     && docker-php-ext-enable xdebug \
-    && curl -s -f -L -o /tmp/installer.php https://raw.githubusercontent.com/composer/getcomposer.org/5fd32f776359b8714e2647ab4cd8a7bed5f3714d/web/installer \
-    && php -r " \
-        \$signature = '55d6ead61b29c7bdee5cccfb50076874187bd9f21f65d8991d46ec5cc90518f447387fb9f76ebae1fbbacf329e583e30'; \
-        \$hash = hash('SHA384', file_get_contents('/tmp/installer.php')); \
-        if (!hash_equals(\$signature, \$hash)) { \
-            unlink('/tmp/installer.php'); \
-            echo 'Integrity check failed, installer is either corrupt or worse.' . PHP_EOL; \
-            exit(1); \
-        }" \
-    && php /tmp/installer.php --no-ansi --install-dir=/usr/bin --filename=composer --version=${COMPOSER_VERSION} \
-    && rm /tmp/installer.php \
-    && composer --ansi --version --no-interaction \
-    && composer -n global require hirak/prestissimo \
     && apk del gcc libxml2-dev libxslt-dev make \
     && rm -rf /var/cache/apk/*
+
+ENV COMPOSER_ALLOW_SUPERUSER 1
+ENV COMPOSER_HOME /composer
+ENV COMPOSER_VERSION 1.8.0
+ENV COMPOSER_INSTALLER_SIG 93b54496392c062774670ac18b134c3b3a95e5a5e5c8f1a9f115f203b75bf9a129d5daa8ba6a13e2cc8a1da0806388a8
+
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+    && php -r "if (hash_file('sha384', 'composer-setup.php') === '${COMPOSER_INSTALLER_SIG}') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" \
+    && php composer-setup.php --install-dir=/usr/bin --filename=composer --version=${COMPOSER_VERSION} \
+    && php -r "unlink('composer-setup.php');" \
+    && composer --ansi --version --no-interaction
 
 ADD 60-user.ini /usr/local/etc/php/conf.d/

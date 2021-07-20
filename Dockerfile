@@ -3,7 +3,7 @@ FROM php:7.4-fpm-alpine
 EXPOSE 8000
 
 RUN apk update && apk upgrade \
-    && apk add gcc libxml2 libxslt libcurl libc-dev libxml2-dev libxslt-dev make curl icu-dev zlib-dev git redis autoconf\
+    && apk add gcc libxml2 libxslt libcurl libc-dev libxml2-dev libxslt-dev make curl icu-dev zlib-dev libzip-dev oniguruma-dev git redis autoconf\
     && docker-php-ext-install intl \
     && pecl install redis \
     && pecl install apcu \
